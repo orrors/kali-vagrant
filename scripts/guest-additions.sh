@@ -1,8 +1,6 @@
 #!/bin/bash
 set -eux
 
-# install the Guest Additions.
-if [ -n "$(lspci | grep 'Red Hat' | head -1)" ]; then
 # install the qemu-kvm Guest Additions.
 apt-get install -y qemu-guest-agent spice-vdagent
 # configure the system to automatically resize the xfce desktop.
@@ -59,9 +57,6 @@ cat >/etc/logrotate.d/x-resize <<'EOF'
     nocreate
 }
 EOF
-else
-echo 'ERROR: Unknown VM host.' || exit 1
-fi
 
 # reboot.
 nohup bash -c "ps -eo pid,comm | awk '/sshd/{print \$1}' | xargs kill; sync; reboot"

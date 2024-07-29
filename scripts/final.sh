@@ -23,18 +23,6 @@ chmod 600 authorized_keys
 chown -R vagrant:vagrant .
 popd
 
-# install cloud-init.
-apt-get install -y --no-install-recommends cloud-init cloud-initramfs-growroot
-
-# install the nfs client to support nfs synced folders in vagrant.
-apt-get install -y nfs-common
-
-# install the smb client to support cifs/smb/samba synced folders in vagrant.
-apt-get install -y --no-install-recommends cifs-utils
-
-# install rsync to support rsync synced folders in vagrant.
-apt-get install -y rsync
-
 # disable the DNS reverse lookup on the SSH server. this stops it from
 # trying to resolve the client IP address into a DNS domain name, which
 # is kinda slow and does not normally work when running inside VB.
@@ -49,15 +37,6 @@ sed -i -E 's,#(GRUB_TERMINAL\s*=).*,\1console,g' /etc/default/grub
 
 # apply the grub configuration.
 update-grub
-
-# use the up/down arrows to navigate the bash history.
-# NB to get these codes, press ctrl+v then the key combination you want.
-cat<<"EOF">>/etc/inputrc
-"\e[A": history-search-backward
-"\e[B": history-search-forward
-set show-all-if-ambiguous on
-set completion-ignore-case on
-EOF
 
 # reset the machine-id.
 # NB systemd will re-generate it on the next boot.

@@ -40,7 +40,7 @@ source "qemu" "kali-amd64" {
   qemuargs = [
     ["-cpu", "host"],
   ]
-  # headless       = true
+  headless       = true
   net_device     = "virtio-net"
   http_directory = "."
   format         = "qcow2"
@@ -84,8 +84,9 @@ build {
     expect_disconnect = true
     execute_command   = "echo vagrant | sudo -S {{ .Vars }} bash {{ .Path }}"
     scripts = [
-      "provision-guest-additions.sh",
-      "provision.sh"
+      "scripts/guest-additions.sh",
+      "scripts/custom.sh",
+      "scripts/final.sh"
     ]
   }
 
