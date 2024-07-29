@@ -1,3 +1,5 @@
+# vi: set ft=cfg :
+
 # disable Predictable Network Interface Names (not supported in Vagrant 1.8.1).
 d-i debian-installer/add-kernel-opts string net.ifnames=0
 d-i preseed/late_command string \
@@ -16,7 +18,7 @@ apt-cdrom-setup apt-setup/cdrom/set-next boolean false
 d-i debian-installer/locale string en_US.UTF-8
 d-i localechooser/supported-locales multiselect en_US.UTF-8, pt_PT.UTF-8
 
-d-i keyboard-configuration/xkb-keymap select pt
+d-i keyboard-configuration/xkb-keymap select us
 
 d-i mirror/country string manual
 d-i mirror/http/hostname string http.kali.org
@@ -24,7 +26,7 @@ d-i mirror/http/directory string /kali
 d-i mirror/http/proxy string
 
 d-i clock-setup/utc boolean true
-d-i time/zone string Europe/Lisbon
+d-i time/zone string US/Eastern
 
 d-i partman-basicfilesystems/no_swap boolean false
 d-i partman-auto/method string regular
@@ -82,9 +84,7 @@ tasksel tasksel/first multiselect
 d-i pkgsel/include string \
   sudo \
   openssh-server \
-  vim \
-  kali-desktop-xfce \
-  kali-linux-default
+  kali-desktop-xfce
 d-i pkgsel/upgrade select full-upgrade
 d-i pkgsel/update-policy select none
 d-i apt-setup/contrib boolean true

@@ -16,7 +16,7 @@ cat >"$path.json" <<EOF
   "name": "$name",
   "versions": [
     {
-      "version": "0.0.0",
+      "version": "2024.1",
       "providers": [
         {
           "name": "$provider",

@@ -20,6 +20,7 @@ kali-${VERSION}-amd64-libvirt.box: clean preseed.txt scripts/guest-additions.sh 
 	PKR_VAR_vagrant_box=$@ \
 		packer build -only=qemu.kali-amd64 -on-error=abort -timestamp-ui kali.pkr.hcl
 	@./box-metadata.sh libvirt kali-${VERSION}-amd64 $@
+	rmdir packer_cache
 
 clean:
 	rm -rf ./output-kali-amd64 ./packer_cache

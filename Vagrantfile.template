@@ -1,13 +1,16 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
 Vagrant.configure(2) do |config|
   config.vm.provider 'libvirt' do |lv|
-    libvirt.graphics_type  = "spice"
-    libvirt.nic_model_type = "virtio"
-    libvirt.sound_type     = "ich6"
-    libvirt.video_type     = "qxl"
-    lv.disk_bus = 'virtio'
+    lv.graphics_type  = "spice"
+    lv.nic_model_type = "virtio"
+    lv.sound_type     = "ich6"
+    lv.video_type     = "qxl"
+    lv.disk_bus       = 'virtio'
 
-    libvirt.channel :type  => 'spicevmc', :target_name => 'com.redhat.spice.0',     :target_type => 'virtio'
-    libvirt.channel :type  => 'unix',     :target_name => 'org.qemu.guest_agent.0', :target_type => 'virtio'
-    libvirt.random  :model => 'random'
+    lv.channel :type  => 'spicevmc', :target_name => 'com.redhat.spice.0',     :target_type => 'virtio'
+    lv.channel :type  => 'unix',     :target_name => 'org.qemu.guest_agent.0', :target_type => 'virtio'
+    lv.random  :model => 'random'
   end
 end

@@ -1,23 +1,44 @@
-ENV['VAGRANT_EXPERIMENTAL'] = 'typed_triggers'
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$provision = <<-SCRIPT
+ln -s /vagrant ~/vagrant
+sudo gunzip /usr/share/wordlists/rockyou.txt.gz
+echo | sudo tee /etc/motd
+SCRIPT
 
 Vagrant.configure(2) do |config|
-  config.vm.box = 'kali-2023.3-amd64'
+  config.vm.box = 'kali-2024'
+  config.vm.define "example"
+  config.vm.hostname = 'example'
 
-  config.vm.hostname = 'example.test'
+  config.vm.provider 'libvirt' do |libvirt|
+    libvirt.cpus = 8
+    libvirt.memory = 8192
+    libvirt.memorybacking :access, :mode => "shared"
 
-  config.vm.provider 'libvirt' do |lv, config|
-    lv.default_prefix = "#{File.basename(File.dirname(File.dirname(__FILE__)))}_"
-    lv.memory = 2048
-    lv.cpus = 2
-    lv.cpu_mode = 'host-passthrough'
-    lv.nested = true # nested virtualization.
-    lv.keymap = 'pt'
-    lv.machine_virtual_size = 16 # bump the disk size to 16 GiB.
-    lv.disk_driver :discard => 'unmap', :cache => 'unsafe'
-    config.vm.synced_folder '.', '/vagrant', type: 'nfs', nfs_version: '4.2', nfs_udp: false
+    libvirt.graphics_type  = "spice"
+    libvirt.nic_model_type = "virtio"
+    libvirt.sound_type     = "ich6"
+    libvirt.video_type     = "qxl"
+
+    libvirt.channel :type  => 'spicevmc', :target_name => 'com.redhat.spice.0',     :target_type => 'virtio'
+    libvirt.channel :type  => 'unix',     :target_name => 'org.qemu.guest_agent.0', :target_type => 'virtio'
+    libvirt.random  :model => 'random'
   end
 
-  config.vm.provision 'shell', inline: "echo \"provisioning user is $(id #{$provision_username})\""
+  # Forward X
+  config.ssh.forward_agent = true
+  config.ssh.forward_x11 = true
+
+  # Open ports
+  config.vm.network "forwarded_port", guest: 4444, host: 4444
+  config.vm.network "forwarded_port", guest: 8000, host: 8000
+
+  config.vm.provision "shell", inline: $provision, privileged: false
+
+  config.vm.synced_folder "./", "/vagrant", type: "virtiofs"
+
   config.vm.provision 'shell', inline: 'cat /etc/os-release', name: 'os-release'
   config.vm.provision 'shell', inline: 'echo "machine-id is $(cat /etc/machine-id)"'
   config.vm.provision 'shell', inline: 'echo "machine firmware is $([ -d /sys/firmware/efi ] && echo UEFI || echo BIOS)"', name: 'machine firmware'
