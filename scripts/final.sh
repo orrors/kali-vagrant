@@ -63,9 +63,53 @@ rm -f /var/lib/dbus/machine-id
 systemctl stop systemd-random-seed
 rm -f /var/lib/systemd/random-seed
 
+#cleanup persistent udev rules
+if [ -f /etc/udev/rules.d/70-persistent-net.rules ]; then
+    rm /etc/udev/rules.d/70-persistent-net.rules
+fi
+
 # clean packages.
 apt-get -y autoremove --purge
 apt-get -y clean
+
+#cleanup /tmp directories
+rm -rf /tmp/*
+rm -rf /var/tmp/*
+rm -vf /var/mail/*
+
+# Clean up apt cache
+find /var/cache/apt/archives -type f -exec rm -vf \{\} \;
+
+# Clean up ntp
+rm -vf /var/lib/ntp/ntp.drift
+rm -vf /var/lib/ntp/ntp.conf.dhcp
+
+# echo "Clean up dhcp leases..."
+rm -vf /var/lib/dhcp/*.leases*
+rm -vf /var/lib/dhcp3/*.leases*
+
+# echo "Clean up udev rules..."
+rm -vf /etc/udev/rules.d/70-persistent-cd.rules
+rm -vf /etc/udev/rules.d/70-persistent-net.rules
+
+# echo "Clean up urandom seed..."
+rm -vf /var/lib/urandom/random-seed
+
+# echo "Clean up backups..."
+rm -vrf /var/backups/*;
+rm -vf /etc/shadow- /etc/passwd- /etc/group- /etc/gshadow- /etc/subgid- /etc/subuid-
+
+#flush the logs
+logrotate -f /etc/logrotate.conf
+
+# echo "Cleaning up /var/log..."
+find /var/log -type f -name "*.gz" -exec rm -vf \{\} \;
+find /var/log -type f -name "*.1" -exec rm -vf \{\} \;
+find /var/log -type f -exec truncate -s0 \{\} \;
+#clear audit logs
+[ -f /var/log/audit/audit.log ] && cat /dev/null > /var/log/audit/audit.log
+[ -f /var/log/wtmp ] && cat /dev/null > /var/log/wtmp
+[ -f /var/log/lastlog ] && cat /dev/null > /var/log/lastlog
 
 # zero the free disk space -- for better compression of the box file.
 # NB prefer discard/trim (safer; faster) over creating a big zero filled file
@@ -84,3 +128,7 @@ if [ "$(lsblk -no DISC-GRAN $root_dev | awk '{print $1}')" != '0B' ]; then
 else
     dd if=/dev/zero of=/EMPTY bs=1M || true; rm -f /EMPTY
 fi
+
+# echo "Clearing bash history..."
+cat /dev/null > /root/.bash_history
+history -c

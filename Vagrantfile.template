@@ -12,5 +12,7 @@ Vagrant.configure(2) do |config|
     lv.channel :type  => 'spicevmc', :target_name => 'com.redhat.spice.0',     :target_type => 'virtio'
     lv.channel :type  => 'unix',     :target_name => 'org.qemu.guest_agent.0', :target_type => 'virtio'
     lv.random  :model => 'random'
+
+    lv.loader = "/usr/share/ovmf/OVMF.fd"
   end
 end

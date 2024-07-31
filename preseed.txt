@@ -84,7 +84,9 @@ tasksel tasksel/first multiselect
 d-i pkgsel/include string \
   sudo \
   openssh-server \
-  kali-desktop-xfce
+  kali-desktop-xfce \
+  kali-linux-headless \
+  kali-tools-top10
 d-i pkgsel/upgrade select full-upgrade
 d-i pkgsel/update-policy select none
 d-i apt-setup/contrib boolean true

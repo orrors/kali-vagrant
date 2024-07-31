@@ -12,10 +12,11 @@ echo '* libraries/restart-without-asking boolean true' | sudo debconf-set-select
 # ====================================================================================================
 # MAIN
 sudo NEEDRESTART_MODE=a apt install -y -qq --no-install-recommends \
-    fzf npm xclip ripgrep strace feh golang-go xxd curl \
-    patchelf hexedit gdb ghidra gdbserver \
-    peass \
-    vim-gtk3 git-lfs
+    fzf npm xclip ripgrep strace feh xxd curl vim-gtk3 git-lfs \
+    golang-go \
+    ffuf \
+    hexedit gdb \
+    peass
 
 # ====================================================================================================
 # install latest docker from debian repositories
@@ -34,13 +35,5 @@ curl -sOL https://github.com/ClementTsang/bottom/releases/download/0.9.6/bottom_
 
 # ====================================================================================================
 # install usefull python packages
-# pip install pwntools z3-solver ortools pycryptodome
+pip install pwntools z3-solver ortools pycryptodome
 
-# ====================================================================================================
-# SET DARK THEMES
-mkdir -p ~/.ghidra/.ghidra_11.0_DEV/ && echo "Theme=Class\:generic.theme.builtin.FlatDarkTheme" > ~/.ghidra/.ghidra_11.0_DEV/preferences
-mkdir -p ~/.BurpSuite && echo '{"user_options":{"display":{"user_interface":{"look_and_feel":"Dark"}},"misc":{"hotkeys":[{"action":"open_embedded_browser","hotkey":"Ctrl+P"}]}}}' > ~/.BurpSuite/UserConfigCommunity.json
-
-# ====================================================================================================
-# Fix X11 sharing timeout for gnome windows
-echo 'eval `dbus-launch --sh-syntax`' >> ~/.profile
