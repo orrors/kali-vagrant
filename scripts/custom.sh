@@ -4,6 +4,8 @@ set -eu
 # echo all the executed commands.
 set -x
 
+export DEBIAN_FRONTEND="noninteractive"
+
 # use bash shell
 sudo chsh vagrant -s /bin/bash
 

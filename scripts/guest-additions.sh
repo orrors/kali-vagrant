@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eux
 
+export DEBIAN_FRONTEND="noninteractive"
+
 # install the qemu-kvm Guest Additions.
 apt-get install -y qemu-guest-agent spice-vdagent
 # configure the system to automatically resize the xfce desktop.
