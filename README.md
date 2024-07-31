@@ -1,8 +1,6 @@
-Builds kali base box with
+Builds kali vagrant box
 
 # Usage
-
-Install Packer 1.9+ and Vagrant 2.3+.
 
 ```
 make

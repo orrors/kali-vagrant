@@ -4,7 +4,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  action:
     runs-on: ubuntu-latest
     env:
       PACKER_CACHE_DIR: /var/tmp/packer_cache
@@ -13,17 +13,25 @@ jobs:
       VAGRANT_CLOUD_BOX_FILE: kali-2024.1-amd64-libvirt.box
     steps:
       - uses: actions/checkout@v4
+      - name: Dependencies
+        run: |
+          # make space for the box
+          sudo apt-get remove -y azure-cli google-chrome-stable firefox powershell mono-devel
+          sudo apt-get autoremove -y
+          sudo apt-get clean
+          rm -rf /usr/share/dotnet/
+          rm -rf /opt/hostedtoolcache
+
+          # install dependencies
+          sudo apt-get install -y libvirt-clients libvirt-daemon-system libvirt-daemon virtinst bridge-utils qemu qemu-system-x86
       - name: Enable KVM group perms
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-          sudo apt-get update
-          sudo apt-get install -y libvirt-clients libvirt-daemon-system libvirt-daemon virtinst bridge-utils qemu qemu-system-x86
           sudo usermod -a -G kvm,libvirt $USER
       - name: Build box
         run: |
-          sudo apt-get install -y qemu-kvm sysfsutils libvirt-dev
           packer plugins install github.com/hashicorp/vagrant
           make || cat kali-2024.1-amd64-libvirt.box.log
       - name: Upload to vagrant cloud
