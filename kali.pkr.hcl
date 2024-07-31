@@ -40,7 +40,7 @@ source "qemu" "kali-amd64" {
   qemuargs = [
     ["-cpu", "host"],
   ]
-  # headless       = true
+  headless       = true
   net_device     = "virtio-net"
   http_directory = "."
   format         = "qcow2"
