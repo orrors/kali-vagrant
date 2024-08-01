@@ -9,8 +9,7 @@ VAGRANT_BOX_FILE=$3
 # Vagrant cloud api documentation
 # https://developer.hashicorp.com/vagrant/vagrant-cloud/api/v2
 
-
-last_version=$(curl -sf "https://app.vagrantup.com/api/v2/box/${VAGRANT_CLOUD_USER}/${NAME}" | jq -r '.version[-1].version' | cut -f1 -d.)
+last_version=$(curl -sf "https://app.vagrantup.com/api/v2/box/${VAGRANT_CLOUD_USER}/${NAME}" | jq -r '.versions[-1].version' | cut -f1 -d.)
 BOX_VERSION=$((last_version+1)).0.0
 
 # create box version
