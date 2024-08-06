@@ -9,11 +9,10 @@ VAGRANT_BOX_FILE=$3
 # Vagrant cloud api documentation
 # https://developer.hashicorp.com/vagrant/vagrant-cloud/api/v2
 
-last_version=$(curl -sf "https://app.vagrantup.com/api/v2/box/${VAGRANT_CLOUD_USER}/${NAME}" | jq -r '.versions[0].version' | cut -f1 -d.)
-BOX_VERSION=$((last_version+1)).0.0
+BOX_VERSION=2024.2
 
 # create box version
-curl -X POST \
+curl -s -X POST \
   --header "Content-Type: application/json" \
   --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   https://app.vagrantup.com/api/v2/box/${VAGRANT_CLOUD_USER}/${NAME}/versions \
@@ -22,7 +21,7 @@ curl -X POST \
 BOX_CHECKSUM=$(sha256sum "${VAGRANT_BOX_FILE}" | cut -d ' ' -f 1)
 
 # create box provider
-curl -X POST \
+curl -s -X POST \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   https://app.vagrantup.com/api/v2/box/${VAGRANT_CLOUD_USER}/${NAME}/version/${BOX_VERSION}/providers \
@@ -39,7 +38,7 @@ upload_path=$(curl -s \
 curl -X PUT --upload-file ${VAGRANT_BOX_FILE} "${upload_path}"
 
 # release version
-curl -X PUT \
+curl -s -X PUT \
   -H "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   https://app.vagrantup.com/api/v2/box/${VAGRANT_CLOUD_USER}/${NAME}/version/${BOX_VERSION}/release
 

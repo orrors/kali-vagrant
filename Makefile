@@ -1,11 +1,11 @@
 SHELL=bash
 .SHELLFLAGS=-euo pipefail -c
 
-VERSION=2024.1
+VERSION=2024.2
 
 build-libvirt: kali-${VERSION}-amd64-libvirt.box
 
-kali-${VERSION}-amd64-libvirt.box: clean preseed.txt scripts/guest-additions.sh scripts/final.sh kali.pkr.hcl Vagrantfile.template
+kali-${VERSION}-amd64-libvirt.box: clean preseed.txt provision/guest-additions.sh provision/final.sh provision/custom.sh kali.pkr.hcl Vagrantfile.template
 	rm -f $@
 	CHECKPOINT_DISABLE=1 \
 	PACKER_LOG=1 \

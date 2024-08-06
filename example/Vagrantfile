@@ -8,7 +8,7 @@ echo | sudo tee /etc/motd
 SCRIPT
 
 Vagrant.configure(2) do |config|
-  config.vm.box = 'kali-2024'
+  config.vm.box = '0rr0rs/kali'
   config.vm.define "example"
   config.vm.hostname = 'example'
 

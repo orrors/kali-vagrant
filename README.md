@@ -6,7 +6,7 @@ Builds kali vagrant box
 make
 ```
 
-Boxe versions are deployed automatically here when changes are made to master:
+Box versions are deployed automatically here when changes are made to master:
 
 https://app.vagrantup.com/0rr0rs/boxes/kali/
 
@@ -17,7 +17,7 @@ vagrant init 0rr0rs/kali
 vagrant up
 ```
 
-Or you can use the [Vagrant file in examples](./example/Vagrantfile)
+<details><summary><a href="./example/Vagrantfile">Or you can use the Vagrantfile in the examples directory</a></summary>
 
 ```ruby
 # -*- mode: ruby -*-
@@ -30,7 +30,7 @@ echo | sudo tee /etc/motd
 SCRIPT
 
 Vagrant.configure(2) do |config|
-  config.vm.box = 'kali-2024'
+  config.vm.box = '0rr0rs/kali'
   config.vm.define "orrors-kali"
   config.vm.hostname = 'orrors'
 
@@ -62,3 +62,10 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: $provision, privileged: false
 end
 ```
+
+</details>
+
+## Notes:
+
+Run the script `./scripts/bump-kali-version.sh` to update files to use the newest kali version
+

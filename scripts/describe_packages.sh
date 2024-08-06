@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CUSTOM_PACKAGES_SCRIPT=scripts/custom.sh
+CUSTOM_PACKAGES_SCRIPT=provision/custom.sh
 
 echo -e "Apt packages:\n\`\`\`"
 sed -n ':x; /\\$/ {N; s/\\\n\s\+//; tx}; /apt install/ {s/.*-y //g; s/ /\n/gp}' $CUSTOM_PACKAGES_SCRIPT

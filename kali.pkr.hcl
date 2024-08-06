@@ -23,7 +23,7 @@ variable "disk_size" {
 
 variable "iso_url" {
   type    = string
-  default = "https://cdimage.kali.org/kali-2024.2/kali-linux-2024.2-installer-netinst-amd64.iso"
+  default = "https://cdimage.kali.org/current/kali-linux-2024.2-installer-netinst-amd64.iso"
 }
 
 variable "iso_checksum" {
@@ -32,29 +32,28 @@ variable "iso_checksum" {
 }
 
 source "qemu" "kali-amd64" {
-  accelerator  = "kvm"
-  machine_type = "q35"
-  efi_boot     = true
-  cpus         = 4
-  memory       = 4 * 1024
-  qemuargs = [
-    ["-cpu", "host"],
-  ]
-  headless       = true
-  net_device     = "virtio-net"
-  http_directory = "."
-  format         = "qcow2"
-  disk_size      = var.disk_size
-  disk_interface = "virtio-scsi"
-  disk_cache     = "unsafe"
-  disk_discard   = "unmap"
-  iso_url        = var.iso_url
-  iso_checksum   = var.iso_checksum
-  ssh_username   = "vagrant"
-  ssh_password   = "vagrant"
-  ssh_timeout    = "60m"
-  boot_wait      = "10s"
-  boot_command = [
+  accelerator      = "kvm"
+  machine_type     = "q35"
+  efi_boot         = true
+  cpus             = 4
+  memory           = 4 * 1024
+  qemuargs         = [["-cpu", "host"]]
+  headless         = true
+  net_device       = "virtio-net"
+  http_directory   = "."
+  format           = "qcow2"
+  disk_size        = var.disk_size
+  disk_interface   = "virtio-scsi"
+  disk_cache       = "unsafe"
+  disk_discard     = "unmap"
+  disk_compression = true
+  iso_url          = var.iso_url
+  iso_checksum     = var.iso_checksum
+  ssh_username     = "vagrant"
+  ssh_password     = "vagrant"
+  ssh_timeout      = "60m"
+  boot_wait        = "10s"
+  boot_command     = [
     "c<wait>",
     "linux /install.amd/vmlinuz",
     " auto=true",
@@ -84,9 +83,9 @@ build {
     expect_disconnect = true
     execute_command   = "echo vagrant | sudo -S {{ .Vars }} bash {{ .Path }}"
     scripts = [
-      "scripts/guest-additions.sh",
-      "scripts/custom.sh",
-      "scripts/final.sh"
+      "provision/guest-additions.sh",
+      "provision/custom.sh",
+      "provision/final.sh"
     ]
   }
 
