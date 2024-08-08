@@ -11,8 +11,7 @@ echo '* libraries/restart-without-asking boolean true' | sudo debconf-set-select
 # ====================================================================================================
 # MAIN
 sudo NEEDRESTART_MODE=a apt install -qq --no-install-recommends -y \
-    fzf npm xclip ripgrep strace feh xxd curl vim-gtk3 git-lfs \
-    golang-go \
+    fzf lf npm xclip ripgrep strace feh xxd curl vim-gtk3 git-lfs \
     ffuf \
     hexedit gdb \
     peass
@@ -24,10 +23,6 @@ curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o 
 sudo apt update && sudo apt install -y docker-ce docker-ce-cli containerd.io
 # add user to docker group
 sudo usermod -a -G docker vagrant
-
-# ====================================================================================================
-# install lf
-env CGO_ENABLED=0 go install -ldflags="-s -w" github.com/gokcehan/lf@latest
 
 # install bottom
 curl -sOL https://github.com/ClementTsang/bottom/releases/download/0.9.6/bottom_0.9.6_amd64.deb --output-dir /tmp

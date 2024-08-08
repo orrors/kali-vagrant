@@ -16,21 +16,6 @@ variable "vagrant_box" {
   type = string
 }
 
-variable "disk_size" {
-  type    = string
-  default = 40 * 1024
-}
-
-variable "iso_url" {
-  type    = string
-  default = "https://cdimage.kali.org/current/kali-linux-2024.2-installer-netinst-amd64.iso"
-}
-
-variable "iso_checksum" {
-  type    = string
-  default = "sha256:cd6f784b4e999daa50ab53950669920e0d6b7902be0945314ac234a0f5ee3344"
-}
-
 source "qemu" "kali-amd64" {
   accelerator      = "kvm"
   machine_type     = "q35"
@@ -42,13 +27,13 @@ source "qemu" "kali-amd64" {
   net_device       = "virtio-net"
   http_directory   = "."
   format           = "qcow2"
-  disk_size        = var.disk_size
+  disk_size        = 40 * 1024
   disk_interface   = "virtio-scsi"
   disk_cache       = "unsafe"
   disk_discard     = "unmap"
   disk_compression = true
-  iso_url          = var.iso_url
-  iso_checksum     = var.iso_checksum
+  iso_url          = "https://cdimage.kali.org/current/kali-linux-2024.2-installer-netinst-amd64.iso"
+  iso_checksum     = "file:http://kali.download/base-images/kali-2024.2/SHA256SUMS"
   ssh_username     = "vagrant"
   ssh_password     = "vagrant"
   ssh_timeout      = "60m"
@@ -57,7 +42,7 @@ source "qemu" "kali-amd64" {
     "c<wait>",
     "linux /install.amd/vmlinuz",
     " auto=true",
-    " url={{.HTTPIP}}:{{.HTTPPort}}/preseed.txt",
+    " url={{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg",
     " hostname=vagrant",
     " domain=home",
     " net.ifnames=0",
@@ -75,24 +60,20 @@ source "qemu" "kali-amd64" {
 }
 
 build {
-  sources = [
-    "source.qemu.kali-amd64",
-  ]
+  sources = [ "source.qemu.kali-amd64" ]
 
   provisioner "shell" {
     expect_disconnect = true
     execute_command   = "echo vagrant | sudo -S {{ .Vars }} bash {{ .Path }}"
     scripts = [
       "provision/guest-additions.sh",
-      "provision/custom.sh",
+      "provision/custom_software.sh",
       "provision/final.sh"
     ]
   }
 
   post-processor "vagrant" {
-    only = [
-      "qemu.kali-amd64",
-    ]
+    only = [ "qemu.kali-amd64" ]
     output               = var.vagrant_box
     vagrantfile_template = "Vagrantfile.template"
   }

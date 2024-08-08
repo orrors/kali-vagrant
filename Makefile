@@ -5,7 +5,7 @@ VERSION=2024.2
 
 build-libvirt: kali-${VERSION}-amd64-libvirt.box
 
-kali-${VERSION}-amd64-libvirt.box: clean preseed.txt provision/guest-additions.sh provision/final.sh provision/custom.sh kali.pkr.hcl Vagrantfile.template
+kali-${VERSION}-amd64-libvirt.box: clean preseed.cfg provision/guest-additions.sh provision/final.sh provision/custom_software.sh kali.pkr.hcl Vagrantfile.template
 	rm -f $@
 	CHECKPOINT_DISABLE=1 \
 	PACKER_LOG=1 \
