@@ -37,7 +37,7 @@ source "qemu" "kali-amd64" {
   ssh_username     = "vagrant"
   ssh_password     = "vagrant"
   ssh_timeout      = "60m"
-  boot_wait        = "10s"
+  boot_wait        = "5s"
   boot_command     = [
     "c<wait>",
     "linux /install.amd/vmlinuz",
@@ -48,11 +48,11 @@ source "qemu" "kali-amd64" {
     " net.ifnames=0",
     " BOOT_DEBUG=2",
     " DEBCONF_DEBUG=5",
-    "<enter><wait5s>",
+    "<enter><wait>",
     "initrd /install.amd/initrd.gz",
-    "<enter><wait5s>",
+    "<enter><wait>",
     "boot",
-    "<enter><wait5s>",
+    "<enter><wait>",
   ]
   shutdown_command = "echo vagrant | sudo -S poweroff"
   efi_firmware_code = "/usr/share/OVMF/OVMF_CODE_4M.fd"
