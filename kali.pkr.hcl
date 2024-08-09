@@ -66,9 +66,10 @@ build {
     expect_disconnect = true
     execute_command   = "echo vagrant | sudo -S {{ .Vars }} bash {{ .Path }}"
     scripts = [
-      "provision/guest-additions.sh",
-      "provision/custom_software.sh",
-      "provision/final.sh"
+      "provision/00-custom_software.sh",
+      "provision/97-guest-additions.sh",
+      "provision/98-vagrant.sh",
+      "provision/99-cleanup.sh"
     ]
   }
 

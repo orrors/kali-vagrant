@@ -11,6 +11,11 @@ VAGRANT_BOX_FILE=$3
 
 BOX_VERSION=2024.2
 
+if [[ ! -f ${VAGRANT_BOX_FILE} ]] ; then
+  exit 1
+fi
+
+
 # create box version
 curl -s -X POST \
   --header "Content-Type: application/json" \
