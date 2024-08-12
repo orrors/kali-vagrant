@@ -1,5 +1,7 @@
 Builds kali vagrant box
 
+[![Build and Publish Box](https://github.com/orrors/kali-vagrant/actions/workflows/build_and_publish.yml/badge.svg)](https://github.com/orrors/kali-vagrant/actions/workflows/build_and_publish.yml)
+
 # Usage
 
 ```
