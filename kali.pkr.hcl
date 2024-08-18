@@ -67,6 +67,7 @@ build {
     execute_command   = "echo vagrant | sudo -S {{ .Vars }} bash {{ .Path }}"
     scripts = [
       "provision/00-custom_software.sh",
+      "provision/01-xfce.sh",
       "provision/97-guest-additions.sh",
       "provision/98-vagrant.sh",
       "provision/99-cleanup.sh"

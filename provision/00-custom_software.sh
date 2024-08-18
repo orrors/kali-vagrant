@@ -11,7 +11,7 @@ echo '* libraries/restart-without-asking boolean true' | sudo debconf-set-select
 # ====================================================================================================
 # MAIN
 sudo NEEDRESTART_MODE=a apt install -qq --no-install-recommends -y \
-    fzf lf npm xclip ripgrep strace feh xxd curl vim-gtk3 git-lfs \
+    fzf lf npm xclip xsel ripgrep strace feh xxd curl vim-gtk3 git-lfs \
     ffuf \
     hexedit gdb \
     peass

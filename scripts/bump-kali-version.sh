@@ -12,7 +12,6 @@ fi
 # get the current kali version
 VERSION=$(curl -s "https://cdimage.kali.org/current/" | sed -n 's@.*kali-linux-\([0-9]\+.[0-9]\)\+-installer-netinst-amd64.iso".*@\1@p')
 
-sed -i "/VERSION=[0-9]\+.[0-9]/ s/[0-9]\+.[0-9]/$VERSION/" box-metadata.sh
 sed -i "/iso_url/ s/[0-9]\+.[0-9]/$VERSION/" kali.pkr.hcl
 sed -i "/iso_checksum/ s/[0-9]\+.[0-9]/$VERSION/" kali.pkr.hcl
 sed -i "/VERSION=[0-9]\+.[0-9]/ s/[0-9]\+.[0-9]/$VERSION/" Makefile
