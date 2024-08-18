@@ -2,15 +2,15 @@
 set -eux
 
 # set user dirs
-cat <<EOF >${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs
-XDG_DESKTOP_DIR="$HOME/desk"
-XDG_DOCUMENTS_DIR="$HOME/"
-XDG_DOWNLOAD_DIR="$HOME/downloads"
-XDG_MUSIC_DIR="$HOME/"
-XDG_PICTURES_DIR="$HOME/"
-XDG_PUBLICSHARE_DIR="$HOME/"
-XDG_TEMPLATES_DIR="$HOME/"
-XDG_VIDEOS_DIR="$HOME/"
+cat <<EOF >/etc/xdg/user-dirs.defaults
+DESKTOP=desk
+DOWNLOAD=downloads
+TEMPLATES=
+PUBLICSHARE=
+DOCUMENTS=
+MUSIC=
+PICTURES=
+VIDEOS=
 EOF
 
 # set no icons on desktop
@@ -51,7 +51,6 @@ cat <<EOF >/etc/xdg/xfce4/panel/default.xml
         <value type="int" value="2"/>
         <value type="int" value="3"/>
         <value type="int" value="4"/>
-        <value type="int" value="7"/>
         <value type="int" value="8"/>
         <value type="int" value="12"/>
         <value type="int" value="9"/>
@@ -81,14 +80,6 @@ cat <<EOF >/etc/xdg/xfce4/panel/default.xml
     <property name="plugin-4" type="string" value="directorymenu">
       <property name="icon-name" type="string" value="system-file-manager"/>
       <property name="base-directory" type="string" value="/home/vagrant"/>
-    </property>
-    <property name="plugin-7" type="string" value="launcher">
-      <property name="items" type="array">
-        <value type="string" value="17239627003.desktop"/>
-        <value type="string" value="17239627004.desktop"/>
-        <value type="string" value="17239627005.desktop"/>
-      </property>
-      <property name="move-first" type="bool" value="true"/>
     </property>
     <property name="plugin-8" type="string" value="separator">
       <property name="style" type="uint" value="0"/>
