@@ -2,7 +2,6 @@
 set -eux
 
 # set user dirs
-# TODO confirm that this works because it's being set on the
 cat <<EOF >${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs
 XDG_DESKTOP_DIR="$HOME/desk"
 XDG_DOCUMENTS_DIR="$HOME/"
