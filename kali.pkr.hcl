@@ -32,8 +32,8 @@ source "qemu" "kali-amd64" {
   disk_cache       = "unsafe"
   disk_discard     = "unmap"
   disk_compression = true
-  iso_url          = "https://cdimage.kali.org/current/kali-linux-2024.2-installer-netinst-amd64.iso"
-  iso_checksum     = "file:http://kali.download/base-images/kali-2024.2/SHA256SUMS"
+  iso_url          = "https://cdimage.kali.org/current/kali-linux-2024.3-installer-netinst-amd64.iso"
+  iso_checksum     = "file:http://kali.download/base-images/kali-2024.3/SHA256SUMS"
   ssh_username     = "vagrant"
   ssh_password     = "vagrant"
   ssh_timeout      = "60m"

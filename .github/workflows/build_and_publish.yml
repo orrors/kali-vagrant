@@ -10,7 +10,7 @@ jobs:
       PACKER_CACHE_DIR: /var/tmp/packer_cache
       VAGRANT_CLOUD_USER: 0rr0rs
       NAME: kali
-      VAGRANT_CLOUD_BOX_FILE: kali-2024.2-amd64-libvirt.box
+      VAGRANT_CLOUD_BOX_FILE: kali-2024.3-amd64-libvirt.box
       DEBIAN_FRONTEND: noninteractive
       VAGRANT_CLOUD_TOKEN: ${{ secrets.VAGRANT_CLOUD_TOKEN }}
     steps:
@@ -36,7 +36,7 @@ jobs:
       - name: Build box
         run: |
           packer plugins install github.com/hashicorp/vagrant
-          make || cat kali-2024.2-amd64-libvirt.box.log
+          make || cat kali-2024.3-amd64-libvirt.box.log
       - name: Upload to vagrant cloud
         run: |
           ./scripts/upload_to_vagrant_cloud.sh $VAGRANT_CLOUD_USER $NAME $VAGRANT_CLOUD_BOX_FILE

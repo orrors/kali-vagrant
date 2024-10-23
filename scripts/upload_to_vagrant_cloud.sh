@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 VAGRANT_CLOUD_USER=$1
 NAME=$2
@@ -9,7 +9,7 @@ VAGRANT_BOX_FILE=$3
 # Vagrant cloud api documentation
 # https://developer.hashicorp.com/vagrant/vagrant-cloud/api/v2
 
-BOX_VERSION=2024.2
+BOX_VERSION=2024.3
 PROVIDER='libvirt'
 
 if [[ ! -f ${VAGRANT_BOX_FILE} ]] ; then
