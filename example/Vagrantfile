@@ -5,6 +5,10 @@ $provision = <<-SCRIPT
 ln -s /vagrant ~/vagrant
 sudo gunzip /usr/share/wordlists/rockyou.txt.gz
 echo | sudo tee /etc/motd
+
+# SET DARK THEMES
+mkdir -p ~/.ghidra/.ghidra_11.0_DEV/ && echo "Theme=Class\:generic.theme.builtin.FlatDarkTheme" > ~/.ghidra/.ghidra_11.0_DEV/preferences
+mkdir -p ~/.BurpSuite && echo '{"user_options":{"display":{"user_interface":{"look_and_feel":"Dark"}},"misc":{"hotkeys":[{"action":"open_embedded_browser","hotkey":"Ctrl+P"}]}}}' > ~/.BurpSuite/UserConfigCommunity.json
 SCRIPT
 
 Vagrant.configure(2) do |config|

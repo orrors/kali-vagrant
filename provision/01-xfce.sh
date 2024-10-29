@@ -2,9 +2,9 @@
 set -eux
 
 # customize lightdm
-sed 's@background=.*@background=/usr/share/backgrounds/kali-16x9/kali-metal-dark.png@' -i /etc/lightdm/lightdm-gtk-greeter.conf
-sed 's@theme-name=Kali-Light@theme-name=Kali-Dark@' -i /etc/lightdm/lightdm-gtk-greeter.conf
-echo 'hide-user-image=true' >>/etc/lightdm/lightdm-gtk-greeter.conf
+sed 's@background = .*@background = /usr/share/backgrounds/kali-16x9/kali-metal-dark.png@' -i /etc/lightdm/lightdm-gtk-greeter.conf
+sed 's@theme-name = Kali-Light@theme-name = Kali-Dark@' -i /etc/lightdm/lightdm-gtk-greeter.conf
+echo 'hide-user-image = true' >>/etc/lightdm/lightdm-gtk-greeter.conf
 
 # autofill vagrant user on lightdm
 sed 's/#\?greeter-hide-users=.*/greeter-hide-users=false/' -i /etc/lightdm/lightdm.conf
