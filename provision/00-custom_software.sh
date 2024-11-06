@@ -17,12 +17,14 @@ sudo apt update
 
 # ====================================================================================================
 sudo NEEDRESTART_MODE=a apt install -qq --no-install-recommends -y \
-    fzf lf npm xclip xsel ripgrep feh xxd curl vim-gtk3 git-lfs \
+    fzf lf npm xclip ripgrep feh xxd curl neovim git-lfs \
     ffuf \
     hexedit gdb \
     peass \
     python3-pwntools python3-z3 python3-pycryptodome \
     docker-ce docker-ce-cli containerd.io
+
+sudo update-alternatives --set vim /usr/bin/nvim
 
 # add user to docker group
 sudo usermod -a -G docker vagrant
