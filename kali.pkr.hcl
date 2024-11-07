@@ -1,6 +1,5 @@
 packer {
   required_plugins {
-    # see https://github.com/hashicorp/packer-plugin-qemu
     qemu = {
       version = "1.1.0"
       source  = "github.com/hashicorp/qemu"
@@ -14,6 +13,20 @@ variable "version" {
 
 variable "vagrant_box" {
   type = string
+}
+
+variable "description" {
+  type = string
+}
+
+variable "hcp_client_id" {
+  type    = string
+  default = "${env("HCP_CLIENT_ID")}"
+}
+
+variable "hcp_client_secret" {
+  type    = string
+  default = "${env("HCP_CLIENT_SECRET")}"
 }
 
 source "qemu" "kali-amd64" {
@@ -32,8 +45,8 @@ source "qemu" "kali-amd64" {
   disk_cache       = "unsafe"
   disk_discard     = "unmap"
   disk_compression = true
-  iso_url          = "https://cdimage.kali.org/current/kali-linux-2024.3-installer-netinst-amd64.iso"
-  iso_checksum     = "file:http://kali.download/base-images/kali-2024.3/SHA256SUMS"
+  iso_url          = "https://cdimage.kali.org/current/kali-linux-${var.version}-installer-netinst-amd64.iso"
+  iso_checksum     = "file:http://kali.download/base-images/kali-${var.version}/SHA256SUMS"
   ssh_username     = "vagrant"
   ssh_password     = "vagrant"
   ssh_timeout      = "60m"
@@ -74,9 +87,20 @@ build {
     ]
   }
 
-  post-processor "vagrant" {
-    only = [ "qemu.kali-amd64" ]
-    output               = var.vagrant_box
-    vagrantfile_template = "Vagrantfile.template"
+  post-processors {
+    post-processor "vagrant" {
+      only                 = [ "qemu.kali-amd64" ]
+      output               = var.vagrant_box
+      vagrantfile_template = "Vagrantfile.template"
+    }
+
+    post-processor "vagrant-registry" {
+      box_tag             = "0rr0rs/kali"
+      version             = "${var.version}"
+      client_id           = "${var.hcp_client_id}"
+      client_secret       = "${var.hcp_client_secret}"
+      architecture        = "amd64"
+      version_description = "${var.description}"
+    }
   }
 }

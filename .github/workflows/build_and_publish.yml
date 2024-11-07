@@ -12,7 +12,8 @@ jobs:
       NAME: kali
       VAGRANT_CLOUD_BOX_FILE: kali-2024.3-amd64-libvirt.box
       DEBIAN_FRONTEND: noninteractive
-      VAGRANT_CLOUD_TOKEN: ${{ secrets.VAGRANT_CLOUD_TOKEN }}
+      HCP_CLIENT_ID: ${{ secrets.HCP_CLIENT_ID }}
+      HCP_CLIENT_SECRET: ${{ secrets.HCP_CLIENT_SECRET }}
     steps:
       - uses: actions/checkout@v4
       - name: Free Disk Space (Ubuntu)
@@ -33,10 +34,10 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
           sudo usermod -a -G kvm,libvirt $USER
-      - name: Build box
+      - name: Build/Upload box
         run: |
           packer plugins install github.com/hashicorp/vagrant
           make || cat kali-2024.3-amd64-libvirt.box.log
-      - name: Upload to vagrant cloud
-        run: |
-          ./scripts/upload_to_vagrant_cloud.sh $VAGRANT_CLOUD_USER $NAME $VAGRANT_CLOUD_BOX_FILE
+      # - name: Upload to vagrant cloud
+      #   run: |
+      #     ./scripts/upload_to_vagrant_cloud.sh $VAGRANT_CLOUD_USER $NAME $VAGRANT_CLOUD_BOX_FILE

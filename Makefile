@@ -8,7 +8,8 @@ kali-${VERSION}-amd64-libvirt.box: clean preseed.cfg kali.pkr.hcl Vagrantfile.te
 				provision/01-xfce.sh \
 				provision/97-guest-additions.sh \
 				provision/98-vagrant.sh \
-				provision/99-cleanup.sh
+				provision/99-cleanup.sh \
+				scripts/describe_packages.sh
 
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$@.init.log packer init kali.pkr.hcl
 
@@ -19,6 +20,7 @@ kali-${VERSION}-amd64-libvirt.box: clean preseed.cfg kali.pkr.hcl Vagrantfile.te
 	PACKER_LOG=1 PACKER_LOG_PATH=$@.log \
 	PKR_VAR_version=${VERSION} \
 	PKR_VAR_vagrant_box=$@ \
+	PKR_VAR_description=$(./scripts/describe_packages.sh) \
 		packer build -only=qemu.kali-amd64 -on-error=abort -timestamp-ui kali.pkr.hcl
 	rmdir packer_cache
 
