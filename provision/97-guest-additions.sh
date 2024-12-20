@@ -19,19 +19,13 @@ cat >/usr/local/bin/x-resize <<'EOF'
 # - Finding Sessions as Root: https://unix.stackexchange.com/questions/117083/how-to-get-the-list-of-all-active-x-sessions-and-owners-of-them
 # - Resizing via udev: https://superuser.com/questions/1183834/no-auto-resize-with-spice-and-virt-manager
 LOG_FILE=/var/log/x-resize.log
+VUSER=vagrant
 ## Function to find User Sessions & Resize their display
 function x_resize() {
-    declare -A usrs disps
-    local usrs=()
+    declare -A  disps
     local disps=()
-    for u in $(users); do
-        [[ "$u" = root ]] && continue # skip root
-        usrs["$u"]='1'
-    done
-    for u in "${!usrs[@]}"; do
-        for i in $(sudo ps e -u "$u" | sed -rn 's/.* DISPLAY=(:[0-9]*).*/\1/p' | sort -u); do
-            disps["$i"]="$u"
-        done
+    for i in $(sudo ps e -u "$VUSER" | sed -rn 's/.* DISPLAY=(:[0-9]*).*/\1/p' | sort -u); do
+        disps["$i"]="$VUSER"
     done
     for d in "${!disps[@]}";do
         local session_user="${disps[$d]}"
