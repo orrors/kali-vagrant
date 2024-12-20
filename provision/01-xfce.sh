@@ -69,24 +69,9 @@ cat <<EOF >/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
       </property>
       <property name="monitorVirtual-1" type="empty">
         <property name="workspace0" type="empty">
-          <property name="color-style" type="empty"/>
-          <property name="image-style" type="empty"/>
-          <property name="last-image" type="empty"/>
-        </property>
-        <property name="workspace1" type="empty">
           <property name="color-style" type="int" value="1"/>
           <property name="image-style" type="int" value="5"/>
-          <property name="last-image" type="string" value="/usr/share/images/desktop-base/default"/>
-        </property>
-        <property name="workspace2" type="empty">
-          <property name="color-style" type="int" value="1"/>
-          <property name="image-style" type="int" value="5"/>
-          <property name="last-image" type="string" value="/usr/share/images/desktop-base/default"/>
-        </property>
-        <property name="workspace3" type="empty">
-          <property name="color-style" type="int" value="1"/>
-          <property name="image-style" type="int" value="5"/>
-          <property name="last-image" type="string" value="/usr/share/images/desktop-base/default"/>
+          <property name="last-image" type="string" value="/usr/share/backgrounds/kali-16x9/kali-metal-dark.png"/>
         </property>
       </property>
     </property>
