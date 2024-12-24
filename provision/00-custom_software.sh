@@ -17,7 +17,7 @@ sudo apt update
 
 # ====================================================================================================
 sudo NEEDRESTART_MODE=a apt install -qq --no-install-recommends -y \
-    fzf lf npm xclip ripgrep feh xxd curl neovim git-lfs \
+    fzf lf npm xclip ripgrep feh xxd curl neovim git-lfs bat \
     ffuf \
     hexedit gdb \
     peass \

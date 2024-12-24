@@ -38,7 +38,7 @@ jobs:
       - name: Build/Upload box
         run: |
           make
-          [ $? -gt 0 ] && cat kali-2024.4-amd64-libvirt.box.log && exit 1
+          [ $? -gt 0 ] && cat kali-2024.4-amd64-libvirt.box.log && exit 1 || echo DONE
       # - name: Upload to vagrant cloud
       #   run: |
       #     ./scripts/upload_to_vagrant_cloud.sh $VAGRANT_CLOUD_USER $NAME $VAGRANT_CLOUD_BOX_FILE
