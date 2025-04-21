@@ -9,7 +9,7 @@ VAGRANT_BOX_FILE=$3
 # Vagrant cloud api documentation
 # https://developer.hashicorp.com/vagrant/vagrant-cloud/api/v2
 
-BOX_VERSION=2024.4
+BOX_VERSION=2025.1a
 PROVIDER='libvirt'
 
 if [[ ! -f ${VAGRANT_BOX_FILE} ]] ; then

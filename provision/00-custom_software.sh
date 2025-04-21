@@ -17,7 +17,7 @@ sudo apt update
 
 # ====================================================================================================
 sudo NEEDRESTART_MODE=a apt install -qq --no-install-recommends -y \
-    fzf lf npm xclip ripgrep feh xxd curl neovim git-lfs bat \
+    fzf lf npm xclip ripgrep feh xxd curl neovim git-lfs bat jq \
     ffuf \
     hexedit gdb \
     peass \
@@ -33,3 +33,10 @@ sudo usermod -a -G docker vagrant
 curl -sOL https://github.com/ClementTsang/bottom/releases/download/0.10.2/bottom_0.10.2-1_amd64.deb --output-dir /tmp
 sudo dpkg -i /tmp/bottom_0.10.2-1_amd64.deb
 rm /tmp/bottom_0.10.2-1_amd64.deb
+
+# install htmlq
+curl -sOL https://github.com/mgdm/htmlq/releases/download/v0.4.0/htmlq-x86_64-linux.tar.gz --output-dir /tmp
+tar xzf /tmp/htmlq-x86_64-linux.tar.gz -C /tmp
+mv /tmp/htmlq /usr/local/bin
+
+

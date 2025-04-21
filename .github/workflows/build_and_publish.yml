@@ -10,7 +10,7 @@ jobs:
       PACKER_CACHE_DIR: /var/tmp/packer_cache
       VAGRANT_CLOUD_USER: 0rr0rs
       NAME: kali
-      VAGRANT_CLOUD_BOX_FILE: kali-2024.4-amd64-libvirt.box
+      VAGRANT_CLOUD_BOX_FILE: kali-2025.1a-amd64-libvirt.box
       DEBIAN_FRONTEND: noninteractive
       HCP_CLIENT_ID: ${{ secrets.HCP_CLIENT_ID }}
       HCP_CLIENT_SECRET: ${{ secrets.HCP_CLIENT_SECRET }}
@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt-get install -y libvirt-clients libvirt-daemon-system libvirt-daemon virtinst bridge-utils qemu qemu-system-x86
+          sudo apt-get install -y libvirt-clients libvirt-daemon-system libvirt-daemon virtinst bridge-utils qemu-system qemu-system-x86
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
@@ -38,7 +38,7 @@ jobs:
       - name: Build/Upload box
         run: |
           make
-          [ $? -gt 0 ] && cat kali-2024.4-amd64-libvirt.box.log && exit 1 || echo DONE
+          [ $? -gt 0 ] && cat kali-2025.1a-amd64-libvirt.box.log && exit 1 || echo DONE
       # - name: Upload to vagrant cloud
       #   run: |
       #     ./scripts/upload_to_vagrant_cloud.sh $VAGRANT_CLOUD_USER $NAME $VAGRANT_CLOUD_BOX_FILE
