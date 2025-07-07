@@ -10,8 +10,7 @@ make
 
 Box versions are deployed automatically here when changes are made to master:
 
-https://app.vagrantup.com/0rr0rs/boxes/kali/
-
+https://portal.cloud.hashicorp.com/vagrant/discover/0rr0rs/kali
 
 ### Refer to this to authenticate on hashicorp vagrant cloud
 

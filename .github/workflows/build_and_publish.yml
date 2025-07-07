@@ -10,7 +10,7 @@ jobs:
       PACKER_CACHE_DIR: /var/tmp/packer_cache
       VAGRANT_CLOUD_USER: 0rr0rs
       NAME: kali
-      VAGRANT_CLOUD_BOX_FILE: kali-2025.1a-amd64-libvirt.box
+      VAGRANT_CLOUD_BOX_FILE: kali-2025.2-amd64-libvirt.box
       DEBIAN_FRONTEND: noninteractive
       HCP_CLIENT_ID: ${{ secrets.HCP_CLIENT_ID }}
       HCP_CLIENT_SECRET: ${{ secrets.HCP_CLIENT_SECRET }}
@@ -38,7 +38,7 @@ jobs:
       - name: Build/Upload box
         run: |
           make
-          [ $? -gt 0 ] && cat kali-2025.1a-amd64-libvirt.box.log && exit 1 || echo DONE
+          [ $? -gt 0 ] && cat kali-2025.2-amd64-libvirt.box.log && exit 1 || echo DONE
       # - name: Upload to vagrant cloud
       #   run: |
       #     ./scripts/upload_to_vagrant_cloud.sh $VAGRANT_CLOUD_USER $NAME $VAGRANT_CLOUD_BOX_FILE
