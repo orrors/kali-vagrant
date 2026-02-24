@@ -1,7 +1,7 @@
 SHELL=bash
 .SHELLFLAGS=-euo pipefail -c
 
-VERSION=2025.2
+VERSION=2025.4
 
 kali-${VERSION}-amd64-libvirt.box: clean preseed.cfg kali.pkr.hcl Vagrantfile.template \
 				provision/00-custom_software.sh \

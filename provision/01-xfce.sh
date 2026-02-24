@@ -2,7 +2,7 @@
 set -eux
 
 # customize lightdm
-sed 's@background = .*@background = /usr/share/backgrounds/kali-16x9/kali-metal-dark.png@' -i /etc/lightdm/lightdm-gtk-greeter.conf
+sed 's@background = .*@background = /usr/share/backgrounds/kali-16x9/kali-hack.jpg@' -i /etc/lightdm/lightdm-gtk-greeter.conf
 sed 's@theme-name = Kali-Light@theme-name = Kali-Dark@' -i /etc/lightdm/lightdm-gtk-greeter.conf
 echo 'hide-user-image = true' >>/etc/lightdm/lightdm-gtk-greeter.conf
 
@@ -71,7 +71,7 @@ cat <<EOF >/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
         <property name="workspace0" type="empty">
           <property name="color-style" type="int" value="1"/>
           <property name="image-style" type="int" value="5"/>
-          <property name="last-image" type="string" value="/usr/share/backgrounds/kali-16x9/kali-metal-dark.png"/>
+          <property name="last-image" type="string" value="/usr/share/backgrounds/kali-16x9/kali-hack.jpg"/>
         </property>
       </property>
     </property>
