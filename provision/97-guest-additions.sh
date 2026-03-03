@@ -1,58 +1,143 @@
 #!/bin/bash
+
+# Based on https://github.com/h0ek/x-resize
+
 set -eux
 
 export DEBIAN_FRONTEND="noninteractive"
 
 # install the qemu-kvm Guest Additions.
-apt-get install -y qemu-guest-agent spice-vdagent
-# configure the system to automatically resize the xfce desktop.
-install -m 755 /dev/null /usr/local/bin/x-resize
-cat >/usr/local/bin/x-resize <<'EOF'
-#!/bin/bash
-# Troubleshot:
-# - Make sure auto-resize is enabled in your virt-viewer/spicy client
-# - Make sure spice-vdagentd running without errors
-# - Reload udev rules with: sudo udevadm control --reload-rules
-# - Watch udev events on resize with: udevadm monitor
-# - Watch x-resize logs with: tail -f /var/log/x-resize.log
-# Credits:
-# - Finding Sessions as Root: https://unix.stackexchange.com/questions/117083/how-to-get-the-list-of-all-active-x-sessions-and-owners-of-them
-# - Resizing via udev: https://superuser.com/questions/1183834/no-auto-resize-with-spice-and-virt-manager
-LOG_FILE=/var/log/x-resize.log
-VUSER=vagrant
-## Function to find User Sessions & Resize their display
-function x_resize() {
-    declare -A  disps
-    local disps=()
-    for i in $(sudo ps e -u "$VUSER" | sed -rn 's/.* DISPLAY=(:[0-9]*).*/\1/p' | sort -u); do
-        disps["$i"]="$VUSER"
-    done
-    for d in "${!disps[@]}";do
-        local session_user="${disps[$d]}"
-        local session_display="$d"
-        local session_output="$(sudo -u "$session_user" PATH=/usr/bin DISPLAY="$session_display" xrandr | awk '/ connected /{print $1;exit}')"
-        echo "Session User: $session_user" | tee -a $LOG_FILE
-        echo "Session Display: $session_display" | tee -a $LOG_FILE
-        echo "Session Output: $session_output" | tee -a $LOG_FILE
-        sudo -u "$session_user" PATH=/usr/bin DISPLAY="$session_display" xrandr --output "$session_output" --auto | tee -a $LOG_FILE
-    done
+apt-get install -y qemu-guest-agent spice-vdagent xinput xserver-xorg-input-evdev
+
+SCRIPT_FILE="/usr/local/bin/x-resize"
+XORG_DIR="/etc/X11/xorg.conf.d"
+EVDEV_FILE="${XORG_DIR}/70-tablet-evdev.conf"
+SERVICE_FILE="/etc/systemd/system/x-resize.service"
+
+# --- Xorg InputClass: force tablets to evdev Absolute ---
+mkdir -p "${XORG_DIR}"
+tee "${EVDEV_FILE}" >/dev/null <<'EOF'
+Section "InputClass"
+    Identifier "QEMU USB Tablet via evdev"
+    MatchProduct "QEMU QEMU USB Tablet"
+    Driver "evdev"
+    Option "Mode" "Absolute"
+EndSection
+
+Section "InputClass"
+    Identifier "SPICE vdagent tablet via evdev"
+    MatchProduct "spice vdagent tablet"
+    Driver "evdev"
+    Option "Mode" "Absolute"
+EndSection
+EOF
+
+# --- RandR listener + evdev calibration ---
+install -m 755 /dev/null "${SCRIPT_FILE}"
+cat >"${SCRIPT_FILE}" <<'EOF'
+#!/usr/bin/env bash
+# x-resize-xfce: XFCE/Xorg RandR auto-resize + evdev axis calibration (user mode)
+# Fixes absolute-pointer offset when SPICE yields odd modes (e.g., 1809x1055).
+# Per RandR event:
+#   1) xrandr --auto on active output
+#   2) read current WxH
+#   3) set "Evdev Axis Calibration" = 0..W-1, 0..H-1 on tablets
+#   4) apply a no-op transform to force Xorg to re-evaluate maps
+
+set -euo pipefail
+log(){ logger -t x-resize-xfce -- "$*"; echo "[x-resize-xfce] $*"; }
+
+# Require Xorg
+if [ "${XDG_SESSION_TYPE:-}" != "x11" ]; then
+  log "Not X11 (XDG_SESSION_TYPE=${XDG_SESSION_TYPE:-unset}); exiting."
+  exit 0
+fi
+
+: "${DISPLAY:?DISPLAY not set}"
+: "${XAUTHORITY:=${HOME}/.Xauthority}"
+export DISPLAY XAUTHORITY
+
+TABLETS=("QEMU QEMU USB Tablet" "spice vdagent tablet")
+
+pick_output(){ xrandr --current | awk '/ connected primary/{print $1;exit} / connected/{print $1;exit}'; }
+current_mode(){
+  local m
+  m="$(xrandr | awk '/\*/{print $1;exit}')"   # e.g., 1809x1055
+  if [ -z "$m" ]; then
+    m="$(xrandr | awk -F'current ' 'NR==1{split($2,a,","); gsub(/ /,"",a[1]); print a[1]}')"  # Screen 0: current WxH
+  fi
+  echo "$m"
 }
-echo "Resize Event: $(date)" | tee -a $LOG_FILE
-x_resize
-EOF
-cat >/etc/udev/rules.d/50-x-resize.rules <<'EOF'
-ACTION=="change", KERNEL=="card0", SUBSYSTEM=="drm", RUN+="/usr/local/bin/x-resize"
-EOF
-cat >/etc/logrotate.d/x-resize <<'EOF'
-/var/log/x-resize.log {
-    daily
-    rotate 2
-    missingok
-    notifempty
-    compress
-    nocreate
+
+calibrate_evdev_to(){
+  local wh="$1" w h
+  w="${wh%x*}"; h="${wh#*x}"
+  for dev in "${TABLETS[@]}"; do
+    if xinput --list --name-only | grep -Fxq "$dev"; then
+      log "Calibrate $dev -> ${w}x${h}"
+      xinput --set-prop "$dev" "Evdev Axis Calibration" 0 $((w-1)) 0 $((h-1)) 2>/dev/null || true
+      xinput --set-prop "$dev" "Evdev Axis Inversion" 0 0 2>/dev/null || true
+    fi
+  done
 }
+
+apply_once(){
+  local out cur
+  out="$(pick_output)"; [ -n "$out" ] || { log "No connected outputs"; return 0; }
+
+  # 1) Let SPICE propose size
+  xrandr --output "$out" --auto || true
+
+  # 2) Calibrate evdev axes to current screen size
+  cur="$(current_mode)"
+  [ -n "$cur" ] && calibrate_evdev_to "$cur"
+
+  # 3) No-op transform (forces Xorg to re-evaluate maps). No flicker.
+  xrandr --output "$out" --transform 1,0,0,0,1,0,0,0,1 || true
+}
+
+# Initial pass
+apply_once
+
+# Debounce (300 ms)
+last=0
+debounce_ms=300
+now_ms(){ date +%s%3N 2>/dev/null || echo $(( $(date +%s)*1000 )); }
+should_run(){ local n; n=$(now_ms); if (( n-last >= debounce_ms )); then last=$n; return 0; fi; return 1; }
+
+log "Listening for RandR changes on ${DISPLAY} ..."
+xev -root -event randr 2>/dev/null | grep --line-buffered 'XRROutputChangeNotifyEvent' | \
+while read -r _; do
+  if should_run; then
+    apply_once
+  fi
+done
 EOF
+
+
+# Define the system path
+cat >"${SERVICE_FILE}" <<EOF
+[Unit]
+Description=x-resize (XFCE/Kali): Global Xorg RandR + Calibration (Root)
+# Wait for the display manager (LightDM/GDM) to be ready
+After=display-manager.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+# We must point to the X display. Usually :0 on most Kali/XFCE setups.
+Environment=DISPLAY=:0
+# Point to the Xauthority file so root has permission to poke the user's GUI
+Environment=XAUTHORITY=/var/run/lightdm/root/:0
+ExecStart=${SCRIPT_FILE}
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl enable x-resize.service
 
 # reboot.
 nohup bash -c "ps -eo pid,comm | awk '/sshd/{print \$1}' | xargs kill; sync; reboot"
