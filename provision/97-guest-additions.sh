@@ -119,17 +119,15 @@ EOF
 cat >"${SERVICE_FILE}" <<EOF
 [Unit]
 Description=x-resize (XFCE/Kali): Global Xorg RandR + Calibration (Root)
-# Wait for the display manager (LightDM/GDM) to be ready
 After=display-manager.service
 
 [Service]
 Type=simple
 User=root
 Group=root
-# We must point to the X display. Usually :0 on most Kali/XFCE setups.
 Environment=DISPLAY=:0
-# Point to the Xauthority file so root has permission to poke the user's GUI
 Environment=XAUTHORITY=/var/run/lightdm/root/:0
+Environment=XDG_SESSION_TYPE=x11
 ExecStart=${SCRIPT_FILE}
 Restart=always
 RestartSec=5
